@@ -120,7 +120,7 @@ public class FXMLController implements Initializable {
             ImageViewPreview1.setImage(listaEyes.getAnterior(actual));
             ImageViewPreview2.setImage(actual);
             ImageViewPreview3.setImage(listaEyes.getSiguiente(actual));
-/*
+            /*
             ImageViewEyes.setImage(listaEyes.get(cont2));
             CambiarPreviews(cantArchivosEyes, listaEyes);*/
         } else if (ImageViewBotonActual == ImageViewMouth) {
@@ -134,7 +134,7 @@ public class FXMLController implements Initializable {
             /*ImageViewMouth.setImage(listaMouths.get(cont2));
             CambiarPreviews(cantArchivosMouths, listaMouths);*/
         }
-/*
+        /*
         cont1++;
         cont2++;
         cont3++;*/
@@ -143,11 +143,26 @@ public class FXMLController implements Initializable {
     @FXML
     void anterior(ActionEvent event) {
         if (ImageViewBotonActual == ImageViewFace) {
-            ImageViewFace.setImage(itFace.previous());
+            Image actual = itFace.previous();
+            ImageViewFace.setImage(actual);
+
+            ImageViewPreview1.setImage(listaFaces.getAnterior(actual));
+            ImageViewPreview2.setImage(actual);
+            ImageViewPreview3.setImage(listaFaces.getSiguiente(actual));
         } else if (ImageViewBotonActual == ImageViewEye) {
-            ImageViewEye.setImage(itEye.previous());
+            Image actual = itEye.previous();
+            ImageViewEye.setImage(actual);
+
+            ImageViewPreview1.setImage(listaEyes.getAnterior(actual));
+            ImageViewPreview2.setImage(actual);
+            ImageViewPreview3.setImage(listaEyes.getSiguiente(actual));
         } else if (ImageViewBotonActual == ImageViewMouth) {
-            ImageViewMouth.setImage(itMouth.previous());
+            Image actual = itMouth.previous();
+            ImageViewMouth.setImage(actual);
+
+            ImageViewPreview1.setImage(listaMouths.getAnterior(actual));
+            ImageViewPreview2.setImage(actual);
+            ImageViewPreview3.setImage(listaMouths.getSiguiente(actual));
         }
     }
 
