@@ -82,18 +82,28 @@ public class CircularDoublyLL<E> implements List<E> {
 
     @Override
     public E removeLast() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        E removido = null;
+        if (!isEmpty()) {
+            CDLNode nuevoLast = Last.getPrevious();
+            removido = Last.getContent();
+            Last.getPrevious().setNext(Last.getNext());
+            Last.getNext().setPrevious(Last.getPrevious());
+            Last.setNext(null);
+            Last.setPrevious(null);
+            Last = nuevoLast;
+        }
+        return removido;
     }
 
     @Override
     public boolean add(int index, E element) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-
+/*
     @Override
     public E remove(int index) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    }*/
 
     @Override
     public E get(int index) {
@@ -157,7 +167,7 @@ public class CircularDoublyLL<E> implements List<E> {
             if (e == n.getContent()) {
                 anterior = n.getPrevious().getContent();
             }
-            n=n.getNext();
+            n = n.getNext();
         } while (n != Last.getNext());
         return anterior;
     }
@@ -169,7 +179,7 @@ public class CircularDoublyLL<E> implements List<E> {
             if (e == n.getContent()) {
                 siguiente = n.getNext().getContent();
             }
-            n=n.getNext();
+            n = n.getNext();
         } while (n != Last.getNext());
         return siguiente;
     }
@@ -239,6 +249,26 @@ public class CircularDoublyLL<E> implements List<E> {
             }
         };
         return it;
+    }
+
+    public void remove(E e) {
+        if (!isEmpty()) {
+            CDLNode<E> n = Last.getNext();
+            if (Last.getContent() == e) {
+                removeLast();
+            } else {
+                do {
+                    if (n.getContent() == e) {
+                        n.getPrevious().setNext(n.getNext());
+                        n.getNext().setPrevious(n.getPrevious());
+                        n.setNext(null);
+                        n.setPrevious(null);
+
+                    }
+                    n = n.getNext();
+                } while (n != null);
+            }
+        }
     }
 
 }

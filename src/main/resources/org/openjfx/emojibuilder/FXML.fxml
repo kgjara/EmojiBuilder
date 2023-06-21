@@ -12,8 +12,8 @@
             <ImageView fx:id="ImageViewFace" fitHeight="187.0" fitWidth="275.0" layoutX="246.0" layoutY="31.0" pickOnBounds="true" preserveRatio="true" />
             <ImageView fx:id="ImageViewEye" fitHeight="132.0" fitWidth="146.0" layoutX="273.0" layoutY="31.0" pickOnBounds="true" />
             <ImageView fx:id="ImageViewMouth" fitHeight="151.0" fitWidth="159.0" layoutX="264.0" layoutY="97.0" pickOnBounds="true" />
-            <Button fx:id="ButtonAdd" layoutX="583.0" layoutY="143.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="78.0" text="Add" />
-            <Button fx:id="ButtonRemove" layoutX="583.0" layoutY="227.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="77.0" text="Remove" />
+            <Button fx:id="ButtonAdd" layoutX="572.0" layoutY="143.0" mnemonicParsing="false" onAction="#AgregarNuevaImagen" prefHeight="43.0" prefWidth="112.0" text="Add" />
+            <Button fx:id="ButtonRemove" layoutX="571.0" layoutY="227.0" mnemonicParsing="false" onAction="#RemoverImagen" prefHeight="51.0" prefWidth="112.0" text="Remove" />
             <Button fx:id="ButtonRostro" layoutX="148.0" layoutY="235.0" mnemonicParsing="false" onAction="#showFaces" prefHeight="51.0" prefWidth="112.0" text="Rostro" />
             <Button fx:id="ButtonBoca" layoutX="405.0" layoutY="235.0" mnemonicParsing="false" onAction="#showMouth" prefHeight="51.0" prefWidth="112.0" text="Boca" />
             <Button fx:id="ButtonOjos" layoutX="274.0" layoutY="235.0" mnemonicParsing="false" onAction="#showEyes" prefHeight="51.0" prefWidth="112.0" text="Ojos" />

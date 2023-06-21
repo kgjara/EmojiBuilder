@@ -16,6 +16,8 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 
 /**
  * FXML Controller class
@@ -72,15 +74,6 @@ public class FXMLController implements Initializable {
     ListIterator<Image> itMouth = listaMouths.listIterator();
 
     private ImageView ImageViewBotonActual;
-    int cantArchivosFaces = CantidadDeArchivos("src/main/resources/imagenes/faces");
-    int cantArchivosEyes = CantidadDeArchivos("src/main/resources/imagenes/eyes");
-    ;
-    int cantArchivosMouths = CantidadDeArchivos("src/main/resources/imagenes/mouth");
-    ;
-    
-    int cont1 = 0;
-    int cont2 = 1;
-    int cont3 = 2;
 
     public void initialize(URL url, ResourceBundle rb) {
         /*ImageFace.setImage(listaFaces.get(0));
@@ -106,38 +99,21 @@ public class FXMLController implements Initializable {
             Image actual = itFace.next();
             ImageViewFace.setImage(actual);
 
-            ImageViewPreview1.setImage(listaFaces.getAnterior(actual));
-            ImageViewPreview2.setImage(actual);
-            ImageViewPreview3.setImage(listaFaces.getSiguiente(actual));
+            CambiarPreviews(actual, listaFaces);
 
-            /*
-            ImageViewFace.setImage(listaFaces.get(cont2));
-            CambiarPreviews(cantArchivosFaces, listaFaces);*/
         } else if (ImageViewBotonActual == ImageViewEye) {
             Image actual = itEye.next();
             ImageViewEye.setImage(actual);
 
-            ImageViewPreview1.setImage(listaEyes.getAnterior(actual));
-            ImageViewPreview2.setImage(actual);
-            ImageViewPreview3.setImage(listaEyes.getSiguiente(actual));
-            /*
-            ImageViewEyes.setImage(listaEyes.get(cont2));
-            CambiarPreviews(cantArchivosEyes, listaEyes);*/
+            CambiarPreviews(actual, listaEyes);
+
         } else if (ImageViewBotonActual == ImageViewMouth) {
             Image actual = itMouth.next();
             ImageViewMouth.setImage(actual);
 
-            ImageViewPreview1.setImage(listaMouths.getAnterior(actual));
-            ImageViewPreview2.setImage(actual);
-            ImageViewPreview3.setImage(listaMouths.getSiguiente(actual));
+            CambiarPreviews(actual, listaMouths);
 
-            /*ImageViewMouth.setImage(listaMouths.get(cont2));
-            CambiarPreviews(cantArchivosMouths, listaMouths);*/
         }
-        /*
-        cont1++;
-        cont2++;
-        cont3++;*/
     }
 
     @FXML
@@ -146,48 +122,57 @@ public class FXMLController implements Initializable {
             Image actual = itFace.previous();
             ImageViewFace.setImage(actual);
 
-            ImageViewPreview1.setImage(listaFaces.getAnterior(actual));
-            ImageViewPreview2.setImage(actual);
-            ImageViewPreview3.setImage(listaFaces.getSiguiente(actual));
+            CambiarPreviews(actual, listaFaces);
+            
         } else if (ImageViewBotonActual == ImageViewEye) {
             Image actual = itEye.previous();
             ImageViewEye.setImage(actual);
 
-            ImageViewPreview1.setImage(listaEyes.getAnterior(actual));
-            ImageViewPreview2.setImage(actual);
-            ImageViewPreview3.setImage(listaEyes.getSiguiente(actual));
+            CambiarPreviews(actual, listaEyes);
+            
         } else if (ImageViewBotonActual == ImageViewMouth) {
             Image actual = itMouth.previous();
             ImageViewMouth.setImage(actual);
 
-            ImageViewPreview1.setImage(listaMouths.getAnterior(actual));
-            ImageViewPreview2.setImage(actual);
-            ImageViewPreview3.setImage(listaMouths.getSiguiente(actual));
+            CambiarPreviews(actual, listaMouths);
+            
         }
     }
 
     @FXML
     void showEyes(ActionEvent event) {
-        ImageViewPreview1.setImage(listaEyes.get(0));
-        ImageViewPreview2.setImage(listaEyes.get(1));
-        ImageViewPreview3.setImage(listaEyes.get(2));
+        ImageViewPreview1.setImage(listaEyes.get(listaEyes.size() - 1));
+        ImageViewPreview2.setImage(listaEyes.get(0));
+        ImageViewPreview3.setImage(listaEyes.get(1));
+
+        ButtonAdd.setText("Add new Eye");
+        ButtonRemove.setText("Remove Eye");
+
         ImageViewBotonActual = ImageViewEye;
     }
 
     @FXML
     void showFaces(ActionEvent event) {
-        ImageViewPreview1.setImage(listaFaces.get(0));
-        ImageViewPreview2.setImage(listaFaces.get(1));
-        ImageViewPreview3.setImage(listaFaces.get(2));
+        ImageViewPreview1.setImage(listaFaces.get(listaFaces.size() - 1));
+        ImageViewPreview2.setImage(listaFaces.get(0));
+        ImageViewPreview3.setImage(listaFaces.get(1));
+
+        ButtonAdd.setText("Add new Face");
+        ButtonRemove.setText("Remove Face");
+
         ImageViewBotonActual = ImageViewFace;
 
     }
 
     @FXML
     void showMouth(ActionEvent event) {
-        ImageViewPreview1.setImage(listaMouths.get(0));
-        ImageViewPreview2.setImage(listaMouths.get(1));
-        ImageViewPreview3.setImage(listaMouths.get(2));
+        ImageViewPreview1.setImage(listaMouths.get(listaMouths.size() - 1));
+        ImageViewPreview2.setImage(listaMouths.get(0));
+        ImageViewPreview3.setImage(listaMouths.get(1));
+
+        ButtonAdd.setText("Add new Mouth");
+        ButtonRemove.setText("Remove Mouth");
+
         ImageViewBotonActual = ImageViewMouth;
     }
 
@@ -226,23 +211,50 @@ public class FXMLController implements Initializable {
             ImageViewMouth.setImage(imagenP);
         }
     }
-
+    
+    /*
     public int CantidadDeArchivos(String RutaCarpeta) {
         File archivo = new File(RutaCarpeta);
         File[] lista = archivo.listFiles();
         return lista.length;
     }
+    */
+    
+    public void CambiarPreviews(Image img, CircularDoublyLL<Image> lista) {
+        ImageViewPreview1.setImage(lista.getAnterior(img));
+        ImageViewPreview2.setImage(img);
+        ImageViewPreview3.setImage(lista.getSiguiente(img));
+    }
 
-    public void CambiarPreviews(int CantArchivos, CircularDoublyLL<Image> lista) {
-        if (cont3 >= CantArchivos) {
-            cont3 = 0;
-        } else if (cont2 >= CantArchivos) {
-            cont2 = 0;
-        } else if (cont1 >= CantArchivos) {
-            cont1 = 0;
+    @FXML
+    void AgregarNuevaImagen(ActionEvent event) {
+        FileChooser fc = new FileChooser();
+        fc.setTitle("Selecciona nueva imagen");
+        fc.getExtensionFilters().addAll(new ExtensionFilter("PNG File", "*.png"));
+        File archivo = fc.showOpenDialog(null);
+        if (archivo != null) {
+            if (ImageViewBotonActual == ImageViewFace) {
+                listaFaces.addLast(new Image(archivo.toURI().toString()));
+            } else if (ImageViewBotonActual == ImageViewEye) {
+                listaEyes.addLast(new Image(archivo.toURI().toString()));
+            } else if (ImageViewBotonActual == ImageViewMouth) {
+                listaMouths.addLast(new Image(archivo.toURI().toString()));
+            }
         }
-        ImageViewPreview1.setImage(lista.get(cont1));
-        ImageViewPreview2.setImage(lista.get(cont2));
-        ImageViewPreview3.setImage(lista.get(cont3));
+    }
+
+    @FXML
+    void RemoverImagen(ActionEvent event) {
+        Image remover;
+        if (ImageViewBotonActual == ImageViewFace){
+            remover = ImageViewFace.getImage();
+            listaFaces.remove(remover);
+        }else if(ImageViewBotonActual == ImageViewEye){
+            remover = ImageViewEye.getImage();
+            listaEyes.remove(remover);
+        }else if(ImageViewBotonActual == ImageViewMouth){
+            remover = ImageViewMouth.getImage();
+            listaMouths.remove(remover);
+        }
     }
 }
