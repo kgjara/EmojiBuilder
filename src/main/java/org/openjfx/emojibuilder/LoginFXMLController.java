@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Scanner;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -26,7 +25,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 /**
  * FXML Controller class
@@ -57,12 +55,8 @@ public class LoginFXMLController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
-        LinkedList<User> listaUsuarios = CargarListaUsuarios();
-        System.out.println(listaUsuarios);
-        for (int i = 0; i < listaUsuarios.size(); i++) {
-            System.out.println(listaUsuarios.get(i).getUsername());
-            System.out.println(listaUsuarios.get(i).getPassword());
-        }
+        LinkedList<User> listaUsuarios = CargarListaUsuarios(); //Opcional, solo para ver los usuarios mas facil,
+        System.out.println(listaUsuarios);                      //sin tener que abrir el .txt
 
     }
 

@@ -5,11 +5,21 @@
 package org.openjfx.emojibuilder;
 
 import TDA.CircularDoublyLL;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.util.ListIterator;
 import java.util.ResourceBundle;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -22,6 +32,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
@@ -83,6 +94,21 @@ public class FXMLController implements Initializable {
     @FXML
     private Button ButtonLogout;
 
+    @FXML
+    private Slider sliderSize;
+
+    @FXML
+    private Slider sliderPositionX;
+
+    @FXML
+    private Slider sliderPositionY;
+
+    @FXML
+    private Button ButtonSave;
+
+    @FXML
+    private Button ButtonLoad;
+
     CircularDoublyLL<Image> listaFaces = agregarImagenesLista("src/main/resources/imagenes/faces");
     CircularDoublyLL<Image> listaEyes = agregarImagenesLista("src/main/resources/imagenes/eyes");
     CircularDoublyLL<Image> listaMouths = agregarImagenesLista("src/main/resources/imagenes/mouth");
@@ -97,9 +123,46 @@ public class FXMLController implements Initializable {
     private double y = 0;
 
     public void initialize(URL url, ResourceBundle rb) {
-        /*ImageFace.setImage(listaFaces.get(0));
-        ImageMouth.setImage(listaMouth.get(0));
-        ImageEyes.setImage(listaEyes.get(0));*/
+
+        sliderSize.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {
+                if (ImageViewBotonActual == ImageViewFace) {
+                    ImageViewFace.setFitHeight((Double) t1);
+                } else if (ImageViewBotonActual == ImageViewEye) {
+                    ImageViewEye.setFitHeight((Double) t1);
+                } else if (ImageViewBotonActual == ImageViewMouth) {
+                    ImageViewMouth.setFitHeight((Double) t1);
+                }
+            }
+
+        });
+
+        sliderPositionX.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {
+                if (ImageViewBotonActual == ImageViewFace) {
+                    ImageViewFace.setX((Double) t1);
+                } else if (ImageViewBotonActual == ImageViewEye) {
+                    ImageViewEye.setX((Double) t1);
+                } else if (ImageViewBotonActual == ImageViewMouth) {
+                    ImageViewMouth.setX((Double) t1);
+                }
+            }
+        });
+
+        sliderPositionY.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {
+                if (ImageViewBotonActual == ImageViewFace) {
+                    ImageViewFace.setY((Double) t1);
+                } else if (ImageViewBotonActual == ImageViewEye) {
+                    ImageViewEye.setY((Double) t1);
+                } else if (ImageViewBotonActual == ImageViewMouth) {
+                    ImageViewMouth.setY((Double) t1);
+                }
+            }
+        });
     }
 
     public CircularDoublyLL<Image> agregarImagenesLista(String RutaCarpeta) {
@@ -233,13 +296,6 @@ public class FXMLController implements Initializable {
         }
     }
 
-    /*
-    public int CantidadDeArchivos(String RutaCarpeta) {
-        File archivo = new File(RutaCarpeta);
-        File[] lista = archivo.listFiles();
-        return lista.length;
-    }
-     */
     public void CambiarPreviews(Image img, CircularDoublyLL<Image> lista) {
         ImageViewPreview1.setImage(lista.getAnterior(img));
         ImageViewPreview2.setImage(img);
@@ -332,11 +388,98 @@ public class FXMLController implements Initializable {
         }
     }
 
+    @FXML
+    void save(ActionEvent event) {
+        Alert alert;
+        //Emoji emoji = new Emoji(ImageViewFace.getImage(), ImageViewEye.getImage(), ImageViewMouth.getImage());
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Guardar Proyecto");
+        fileChooser.getExtensionFilters().addAll(new ExtensionFilter("dat File", "*.dat"));
+        fileChooser.setInitialDirectory(new File("src/main/resources"));
+        File archivo = fileChooser.showSaveDialog(null);
+
+        try {
+
+            FileOutputStream fileOutPutStrem = new FileOutputStream(archivo);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutPutStrem);
+
+            byte[] faceBytes = convertirImagenABytes(ImageViewFace.getImage());
+            byte[] eyeBytes = convertirImagenABytes(ImageViewEye.getImage());
+            byte[] mouthBytes = convertirImagenABytes(ImageViewMouth.getImage());
+
+            objectOutputStream.writeObject(faceBytes);
+            objectOutputStream.writeObject(eyeBytes);
+            objectOutputStream.writeObject(mouthBytes);
+
+            objectOutputStream.close();
+
+            alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle(null);
+            alert.setHeaderText(null);
+            alert.setContentText("Proyecto emoji guardado con éxito!");
+            alert.show();
+
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @FXML
+    void load(ActionEvent event) {
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Cargar Proyecto");
+        fileChooser.getExtensionFilters().addAll(new ExtensionFilter("dat File", "*.dat"));
+        fileChooser.setInitialDirectory(new File("src/main/resources"));
+        File archivo = fileChooser.showOpenDialog(null);
+
+        try {
+            FileInputStream fileInputStream = new FileInputStream(archivo);
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+
+            byte[] faceBytes = (byte[]) objectInputStream.readObject();
+            byte[] eyeBytes = (byte[]) objectInputStream.readObject();
+            byte[] mouthBytes = (byte[]) objectInputStream.readObject();
+
+            Image face = convertirBytesAImagen(faceBytes);
+            Image eye = convertirBytesAImagen(eyeBytes);
+            Image mouth = convertirBytesAImagen(mouthBytes);
+
+            ImageViewFace.setImage(face);
+            ImageViewEye.setImage(eye);
+            ImageViewMouth.setImage(mouth);
+
+            objectInputStream.close();
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public byte[] convertirImagenABytes(Image image) throws IOException {
+        BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(bufferedImage, "png", baos);
+        return baos.toByteArray();
+    }
+
+    private Image convertirBytesAImagen(byte[] bytes) throws IOException {
+        ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+        BufferedImage bufferedImage = ImageIO.read(bis);
+        return SwingFXUtils.toFXImage(bufferedImage, null);
+    }
+
     public void logout() {
 
         try {
             ButtonLogout.getScene().getWindow().hide();
-            
+
             Parent root = FXMLLoader.load(getClass().getResource("LoginFXML.fxml"));
             Stage stage = new Stage();
             Scene scene = new Scene(root);
@@ -363,4 +506,5 @@ public class FXMLController implements Initializable {
             ex.printStackTrace();
         }
     }
+
 }
