@@ -43,7 +43,7 @@ public class LoginFXMLController implements Initializable {
     private ImageView imageView1;
     @FXML
     private ImageView imageView2;
-    
+
     File file = new File("src/main/resources/Users/Username&Password.txt");
 
     private double x = 0;
@@ -54,7 +54,7 @@ public class LoginFXMLController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
+
         LinkedList<User> listaUsuarios = CargarListaUsuarios(); //Opcional, solo para ver los usuarios mas facil,
         System.out.println(listaUsuarios);                      //sin tener que abrir el .txt
 
@@ -145,7 +145,8 @@ public class LoginFXMLController implements Initializable {
         }
         return correcto;
     }
-        public boolean checkSignup(String username) {
+
+    public boolean checkSignup(String username) {
         LinkedList<User> listaUsuarios = CargarListaUsuarios();
         boolean correcto = false;
         for (int i = 0; i < listaUsuarios.size(); i++) {
@@ -155,7 +156,6 @@ public class LoginFXMLController implements Initializable {
         }
         return correcto;
     }
-    
 
     public void signup() {
         Alert alert;
@@ -166,22 +166,28 @@ public class LoginFXMLController implements Initializable {
                 alert.setHeaderText(null);
                 alert.setContentText("Usuario ya existente");
                 alert.show();
-
-            } else {
-                FileWriter fileWriter = new FileWriter(file,true);
-                fileWriter.write(username.getText() + ":" + password.getText()+'\n');
-                fileWriter.close();
                 
+            } else if (username.getText().equals("") || password.getText().equals("")) {
+                alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle(null);
+                alert.setHeaderText(null);
+                alert.setContentText("Por favor, llene todas las celdas");
+                alert.show();
+                
+            } else {
+                FileWriter fileWriter = new FileWriter(file, true);
+                fileWriter.write(username.getText() + ":" + password.getText() + '\n');
+                fileWriter.close();
+
                 username.clear();
                 password.clear();
-                
+
                 alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle(null);
                 alert.setHeaderText(null);
                 alert.setContentText("Usuario agregado con éxito");
                 alert.show();
-                
-                
+
             }
 
         } catch (IOException ex) {

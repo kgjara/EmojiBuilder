@@ -27,7 +27,6 @@ public interface List<E> extends Iterable<E> {
     @Override
     public String toString();
 
-    // PEGAR AQUÍ PROTOTIPOS DE LOS MÉTODOS DEL TALLER
     public E getMiddleElement();
 
     public void swapElements(int index1, int index2);
